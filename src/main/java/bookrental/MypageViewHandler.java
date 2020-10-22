@@ -24,7 +24,8 @@ public class MypageViewHandler {
                 // view 객체 생성
                 Mypage mypage = new Mypage();
                 // view 객체에 이벤트의 Value 를 set 함
-                mypage.setAskId(asked.getRentDate());
+                mypage.setAskId(asked.getId());
+                mypage.setBookId(asked.getBookId());
                 mypage.setStatus(asked.getStatus());
                 mypage.setBookPrice(asked.getBookPrice());
                 mypage.setAskDate(asked.getAskDate());
@@ -42,9 +43,10 @@ public class MypageViewHandler {
                 // view 객체 생성
                 Mypage mypage = new Mypage();
                 // view 객체에 이벤트의 Value 를 set 함
-                mypage.setPayId(paid.getId());
+                mypage.setAskId(paid.getId());
+                mypage.setBookId(paid.getBookId());
                 mypage.setStatus(paid.getStatus());
-                mypage.setPayDate(paid.getPayDate());
+                //mypage.setPayDate(paid.getPayDate());
                 // view 레파지 토리에 save
                 mypageRepository.save(mypage);
             }
@@ -79,7 +81,10 @@ public class MypageViewHandler {
                 List<Mypage> mypageList = mypageRepository.findByBookId(bookRented.getId());
                 for(Mypage mypage : mypageList){
                     // view 객체에 이벤트의 eventDirectValue 를 set 함
+                    mypage.setBookId(bookRented.getId());
                     mypage.setStatus(bookRented.getStatus());
+                    mypage.setBookId(bookRented.getBookId());
+
                     // view 레파지 토리에 save
                     mypageRepository.save(mypage);
                 }
@@ -96,7 +101,9 @@ public class MypageViewHandler {
                 List<Mypage> mypageList = mypageRepository.findByBookId(bookRentCanceled.getId());
                 for(Mypage mypage : mypageList){
                     // view 객체에 이벤트의 eventDirectValue 를 set 함
+                    mypage.setBookId(bookRentCanceled.getId());
                     mypage.setStatus(bookRentCanceled.getStatus());
+                    mypage.setBookId(bookRentCanceled.getBookId());
                     // view 레파지 토리에 save
                     mypageRepository.save(mypage);
                 }
@@ -106,15 +113,5 @@ public class MypageViewHandler {
         }
     }
 
-    @StreamListener(KafkaProcessor.INPUT)
-    public void whenAskCanceled_then_DELETE_1(@Payload AskCanceled askCanceled) {
-        try {
-            if (askCanceled.isMe()) {
-                // view 레파지 토리에 삭제 쿼리
-                mypageRepository.deleteByAskId(askCanceled.getId());
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
+
 }
